@@ -1,4 +1,5 @@
 const express = require('express');
+const { Op } = require('sequelize');
 const { Post, User } = require('../db/models');
 
 const postsRouter = express.Router();
@@ -19,6 +20,19 @@ postsRouter
       res.status(500).json({ error });
     }
   });
+
+postsRouter.post('/search', async (req, res) => {
+  const { input } = req.body;
+  const foundPosts = await Post.findAll({
+    where: {
+      body: {
+        [Op.substring]: input,
+      },
+    },
+  });
+  //   console.log(foundPosts);
+  res.json(foundPosts);
+});
 
 postsRouter
   .route('/:id')

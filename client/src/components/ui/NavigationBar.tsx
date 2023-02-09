@@ -10,6 +10,8 @@ import { logoutHandler } from '../../redux/userSlice/userSlice';
 
 export default function NavigationBar(): JSX.Element {
   const user = useAppSelector((store) => store.user);
+  const searchPosts = useAppSelector((store) => store.posts.searchPosts);
+  console.log('Navbar rerender');
   const dispatch = useAppDispatch();
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -24,12 +26,25 @@ export default function NavigationBar(): JSX.Element {
           <Button component={Link} to="/counter" color="inherit">
             Counter
           </Button>
-          <Button component={Link} to="/login" color="inherit">
-            Login
-          </Button>
-          <Button color="inherit" onClick={() => dispatch(logoutHandler())}>
-            Logout
-          </Button>
+          {user.status === 'empty' ? (
+            <Button component={Link} to="/login" color="inherit">
+              Login
+            </Button>
+          ) : (
+            user.status === 'logged' && (
+              <>
+                <Button component={Link} to="/posts" color="inherit">
+                  Posts
+                </Button>
+                <Button component={Link} to="/search" color="inherit">
+                  Search-{searchPosts.length}
+                </Button>
+                <Button color="inherit" onClick={() => dispatch(logoutHandler())}>
+                  Logout
+                </Button>
+              </>
+            )
+          )}
         </Toolbar>
       </AppBar>
     </Box>
